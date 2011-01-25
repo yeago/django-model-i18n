@@ -103,7 +103,7 @@ def i18n_change_view(instance, request, obj_id, language):
                          files=request.FILES)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(request.path)
+            return HttpResponseRedirect('../../')
     else:
         form = ModelForm(instance=trans)
 
