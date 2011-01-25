@@ -53,16 +53,14 @@ class Translator(object):
             validate(translation_class, master_model)
 
         opts = translation_class(master_model)
-
         # Set up master_model as a multilingual model using translation_class options
         translation_model = self.create_translation_model(master_model, opts)
-        models.register_models(master_model._meta.app_label, translation_model)
+        models.register_models(master_model._meta.app_label, translation_model)        
         self.setup_master_model(master_model, translation_model) # This probably will become a class method soon.
         setup_admin(master_model, translation_model) # Setup django-admin support
 
         # Register the multilingual model and the used translation_class.
         self._registry[master_model] = opts
-
 
     def create_translation_model(self, master_model, opts):
         """

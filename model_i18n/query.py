@@ -63,10 +63,10 @@ class TransJoin(QOuterJoins):
 
         trans_model = model._translation_model
         trans_opts = trans_model._transmeta
-
+        
         alias = 'translation_%s' % lang
         self.data = { alias: lang }
-
+                    
         # Join data
         related_col  = trans_opts.master_field_name
         trans_table  = trans_model._meta.db_table
@@ -75,11 +75,11 @@ class TransJoin(QOuterJoins):
         master_pk    = model._meta.pk.column
 
         where = '%(m_table)s.%(m_pk)s = %(alias)s.%(t_fk)s %(and)s '\
-                '%(alias)s.%(t_lang)s = "%(lang)s"' % {
+                "%(alias)s.%(t_lang)s = '%(lang)s'" % {
                     'm_table': QN(master_table),
                     'm_pk':  QN(master_pk),
                     'and': AND,
-                    'alias': alias,
+                    'alias': QN(alias),
                     't_fk': QN(trans_fk),
                     't_lang': QN(trans_opts.language_field_name),
                     'lang': lang }
@@ -106,7 +106,7 @@ class TransJoin(QOuterJoins):
             select.update(('%s_%s' % (name, lang),
                            '%s.%s' % (alias, QN(name)))
                                 for name in fields)
-        select[CURRENT_LANGUAGES] = '"%s"' % '_'.join(self.data.itervalues())
+        select[CURRENT_LANGUAGES] = '\'%s\'' % '_'.join(self.data.itervalues())
         query.add_extra(select, None, None, None, None, None)
 
     def __and__(self, right):
@@ -177,11 +177,9 @@ class TransQuerySet(QuerySet):
         trans_opts = instance._translation_model._transmeta
 
         # backup master value on <name>_<suffix> attribute
-        apply(lambda name: setattr(instance,
-                                   '_'.join((name, ATTR_BACKUP_SUFFIX)),
-                                   getattr(instance, name, None)),
-               trans_opts.translatable_fields)
-
+        for name in trans_opts.translatable_fields:
+            setattr(instance, '_'.join((name, ATTR_BACKUP_SUFFIX)), getattr(instance, name, None)) 
+        
         languages = filter(None, getattr(instance,
                                          CURRENT_LANGUAGES, '').split('_'))
         implicit = self.lang
