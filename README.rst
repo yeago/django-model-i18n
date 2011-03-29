@@ -19,11 +19,11 @@ Installation
 Configuration
 =============
 
-In module settings:
+In module settings::
 
     MODEL_I18N_CONF = 'project.i18n_conf'
 
-also add 'django.middleware.locale.LocaleMiddleware' into MIDDLEWARE_CLASSES
+also add 'django.middleware.locale.LocaleMiddleware' into MIDDLEWARE_CLASSES::
 
     MIDDLEWARE_CLASSES = (
         'django.middleware.common.CommonMiddleware',
@@ -40,7 +40,7 @@ Notes
 =====
 
 If you will translate models that are registered into django-admin such as django-flatpages
-do this:
+do this::
 
     from model_i18n import loaders
     from model_i18n import translator
@@ -55,17 +55,15 @@ do this:
   
 into MODEL_I18N_CONF file
  
-Changes:
+Changes
 =======
 * now translation model returns user language and keeps set_language method logical:
-   
-    get_query_set -> method return actual i18n translation if there is one else return master language, value
-                   used from django.utils.translation.get_language(). This modified to avoid change
-                   external source code like flatpages middleware.
-    set_language -> method return model for language sent as parameters
-                   used from django.utils.translation.get_language()
-                       
+
+  * get_query_set -> method return actual i18n translation if there is one else return master language, value used from django.utils.translation.get_language(). This modified to avoid change external source code like flatpages middleware.
+  * set_language -> method return model for language sent as parameters used from django.utils.translation.get_language()    
+                  
 * changing " for ' into sql queries it is understand as table field for postgresql
+
 * setup_admin changed to load "related_name" manager
 
 
