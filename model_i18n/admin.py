@@ -25,9 +25,12 @@ def setup_admin(master_model, translation_model):
     that allow i18n fields edition and aggregation for defined languages.
     """
     model_admin = admin.site._registry.get(master_model)
+    if model_admin.__class__ == admin.ModelAdmin:
+        admin.site.unregister(master_model)
+        model_admin = None
     if not model_admin:
         # register model in django-admin with default values
-        admin.site.register(master_model, admin.ModelAdmin)
+        admin.site.register(master_model, type(master_model.__name__ + "Admin", (admin.ModelAdmin,), {}))
         model_admin = admin.site._registry.get(master_model)
     elif model_admin.change_form_template:
         # default change view is populated with links to i18n edition
