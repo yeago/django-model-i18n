@@ -57,6 +57,8 @@ def get_urls(instance):
     return urls[:-1] + patterns('', 
                 url(r'^(?P<obj_id>\d+)/(?P<language>[a-z]{2})/$',
                     instance.i18n_change_view),
+                url(r'^(?P<obj_id>\d+)/(?P<language>[a-z]{2}-[a-z]{2})/$',
+                    instance.i18n_change_view),
                 urls[-1])
 
 
